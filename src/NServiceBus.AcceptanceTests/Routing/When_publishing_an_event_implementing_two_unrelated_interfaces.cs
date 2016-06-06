@@ -23,16 +23,18 @@
                         };
                         return session.Publish(message);
                     }))
-                .WithEndpoint<Subscriber>(b => b.When(async (session, context) =>
+                .WithEndpoint<Subscriber>(b => b.When((session, context) =>
                 {
-                    await session.Subscribe<IEventA>();
-                    await session.Subscribe<IEventB>();
+                    //await session.Subscribe<IEventA>();
+                    //await session.Subscribe<IEventB>();
 
                     if (context.HasNativePubSubSupport)
                     {
                         context.EventASubscribed = true;
                         context.EventBSubscribed = true;
                     }
+
+                    return Task.FromResult(0);
                 }))
                 .Done(c => c.GotEventA && c.GotEventB)
                 .Repeat(r => r.For(Serializers.Xml))
@@ -86,7 +88,7 @@
                                                             typeof(ICommand) != t);
 
                     c.Conventions().DefiningEventsAs(t => t != typeof(CompositeEvent) && typeof(IEvent).IsAssignableFrom(t) && typeof(IEvent) != t);
-                    c.DisableFeature<AutoSubscribe>();
+                    //c.DisableFeature<AutoSubscribe>();
                 })
                     .AddMapping<IEventA>(typeof(Publisher))
                     .AddMapping<IEventB>(typeof(Publisher));
