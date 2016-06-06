@@ -34,6 +34,20 @@
         }
 
         [Test]
+        public void It_requires_at_least_one_endpoint()
+        {
+            const string xml = @"
+<endpoints>
+</endpoints>
+";
+            var doc = XDocument.Parse(xml);
+            var parser = new FileRoutingTableParser();
+
+            var exception = Assert.Throws<XmlSchemaValidationException>(() => parser.Parse(doc));
+            Assert.That(exception.Message, Does.Contain("The element 'endpoints' has incomplete content."));
+        }
+
+        [Test]
         public void It_requires_endpoint_name()
         {
             const string xml = @"
