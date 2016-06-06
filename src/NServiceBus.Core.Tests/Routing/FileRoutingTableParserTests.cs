@@ -61,5 +61,20 @@
             var exception = Assert.Throws<XmlSchemaValidationException>(() => parser.Parse(doc));
             Assert.That(exception.Message, Does.Contain("The required attribute 'name' is missing."));
         }
+
+        [Test]
+        public void It_requires_endpoint_to_have_at_least_one_instance()
+        {
+            const string xml = @"
+<endpoints>
+    <endpoint name=""A""/>
+</endpoints>
+";
+            var doc = XDocument.Parse(xml);
+            var parser = new FileRoutingTableParser();
+
+            var exception = Assert.Throws<XmlSchemaValidationException>(() => parser.Parse(doc));
+            Assert.That(exception.Message, Does.Contain("The element 'endpoint' has incomplete content."));
+        }
     }
 }
