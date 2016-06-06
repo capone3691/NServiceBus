@@ -24,12 +24,12 @@
 ";
             var doc = XDocument.Parse(xml);
             var result = new FileRoutingTableParser().Parse(doc);
-            
+
             CollectionAssert.AreEqual(new[]
             {
-                new EndpointInstance("A", "D1").SetProperty("prop1", "V1").SetProperty("prop2","V2"), 
+                new EndpointInstance("A", "D1").SetProperty("prop1", "V1").SetProperty("prop2","V2"),
                 new EndpointInstance("A").SetProperty("prop3", "V3").SetProperty("prop4", "V4"),
-                new EndpointInstance("B", "D2").SetProperty("prop5", "V5").SetProperty("prop6", "V6"),  
+                new EndpointInstance("B", "D2").SetProperty("prop5", "V5").SetProperty("prop6", "V6"),
             }, result);
         }
 
@@ -38,7 +38,7 @@
         {
             const string xml = @"
 <endpoints>
-    <endpoint someUnusedAttribute=""A""/>
+    <endpoint/>
 </endpoints>
 ";
             var doc = XDocument.Parse(xml);
