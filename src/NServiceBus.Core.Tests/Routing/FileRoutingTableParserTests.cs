@@ -1,7 +1,7 @@
 ﻿namespace NServiceBus.Core.Tests.Routing
 {
-    using System;
     using System.Xml.Linq;
+    using System.Xml.Schema;
     using NServiceBus.Routing;
     using NUnit.Framework;
 
@@ -42,15 +42,10 @@
 </endpoints>
 ";
             var doc = XDocument.Parse(xml);
-            try
-            {
-                new FileRoutingTableParser().Parse(doc);
-                Assert.Fail("Expected error.");
-            }
-            catch (Exception)
-            {
-                Assert.Pass();
-            }
+            var parser = new FileRoutingTableParser();
+
+            var exception = Assert.Throws<XmlSchemaValidationException>(() => parser.Parse(doc));
+            Assert.That(exception.Message, Does.Contain("The required attribute 'name' is missing."));
         }
     }
 }
