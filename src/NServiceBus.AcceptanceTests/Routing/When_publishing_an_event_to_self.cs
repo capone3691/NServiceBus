@@ -5,7 +5,6 @@
     using AcceptanceTesting;
     using EndpointTemplates;
     using NUnit.Framework;
-    using ScenarioDescriptors;
 
     public class When_publishing_an_event_to_self : NServiceBusAcceptanceTest
     {
@@ -13,7 +12,8 @@
         public async Task Event_should_be_received()
         {
             var ctx = await Scenario.Define<Context>(x => x.Id = Guid.NewGuid())
-                .WithEndpoint<PublisherAndSubscriber>(b => b.When((session, context) =>
+                .WithEndpoint<PublisherAndSubscriber>(b => b
+                .When((session, context) =>
                 {
                     if (context.HasNativePubSubSupport)
                     {
@@ -21,7 +21,7 @@
                     }
                     return Task.FromResult(0);
                 })
-                .When(c => c.EventSubscribed || c.HasNativePubSubSupport, (session, _) => session.Publish(new Event())))
+                .When(c => c.EventSubscribed || c.HasNativePubSubSupport, (session, context) => session.Publish(new Event { ContextId = context.Id })))
                 .Done(c => c.GotEvent)
                 .Run(TimeSpan.FromSeconds(20)).ConfigureAwait(false);
 
@@ -68,7 +68,6 @@
                     return Task.FromResult(0);
                 }
             }
-
         }
 
         public class Event : IEvent
