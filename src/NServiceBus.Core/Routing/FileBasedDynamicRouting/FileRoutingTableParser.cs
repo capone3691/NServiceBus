@@ -11,10 +11,12 @@ namespace NServiceBus
     {
         public FileRoutingTableParser()
         {
-            var stream = GetType().Assembly.GetManifestResourceStream("NServiceBus.Routing.FileBasedDynamicRouting.endpoints.xsd");
-
-            schema = new XmlSchemaSet();
-            schema.Add("", XmlReader.Create(stream));
+            using (var stream = GetType().Assembly.GetManifestResourceStream("NServiceBus.Routing.FileBasedDynamicRouting.endpoints.xsd"))
+            using (var xmlReader = XmlReader.Create(stream))
+            {
+                schema = new XmlSchemaSet();
+                schema.Add("", xmlReader);
+            }
         }
 
         public IEnumerable<EndpointInstance> Parse(XDocument document)
