@@ -61,7 +61,7 @@ namespace NServiceBus
                 ExceptionHeaderHelper.SetExceptionHeaders(context.Headers, failureInfo.Exception, localAddress, null);
 
                 var body = new byte[context.BodyStream.Length];
-                context.BodyStream.Read(body, 0, body.Length);
+                await context.BodyStream.ReadAsync(body, 0, body.Length).ConfigureAwait(false);
 
                 var outgoingMessage = new OutgoingMessage(context.MessageId, context.Headers, body);
                 var addressTag = new UnicastAddressTag(errorQueueAddress);
